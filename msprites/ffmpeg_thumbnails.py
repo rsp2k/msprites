@@ -3,7 +3,6 @@ import tempfile
 from msprites.command import Command
 from msprites.settings import Settings
 from msprites.constants import FFMPEG_THUMBNAIL_IMAGES
-from msprites.temp_file import TempFile
 
 
 class FFmpegThumbnails(Settings):

@@ -9,15 +9,17 @@ class WebVTT:
     IMAGE_TITLE_FORMAT = "{filename}#xywh={x},{y},{w},{h}\n\n"
     FILENAME = "sprite.webvtt"
 
-    def __init__(self, sprites):
+    def __init__(self, sprites, filename=None):
         self.sprites = sprites
         self.dir = sprites.dir
+        if filename:
+            self.FILENAME = filename
 
     def ips_seconds_to_timestamp(self, ips):
         return time.strftime(WebVTT.TIME_FORMAT, time.gmtime(ips))
 
     def getx(self, imnumber, w, h):
-        # coridinate in sprite image for a given image
+        # coordinate in sprite image for a given image
         gridsize = Settings.ROWS * Settings.COLS
         imnumber = imnumber-((imnumber//gridsize)*gridsize)
         hindex = imnumber//Settings.ROWS
@@ -25,13 +27,12 @@ class WebVTT:
         return windex*w
 
     def gety(self, imnumber, w, h):
-        # coridinate in sprite image for a given image
+        # coordinate in sprite image for a given image
         gridsize = Settings.ROWS * Settings.COLS
         imnumber = imnumber-((imnumber//gridsize)*gridsize)
         hindex = imnumber//Settings.ROWS
         windex = imnumber % Settings.COLS
         return hindex*h
-
 
     def content(self):
         contents = [WebVTT.HEADER]
@@ -54,9 +55,10 @@ class WebVTT:
             end += Settings.IPS
         return contents
 
+    @property
     def dest(self):
         return os.path.join(self.dir.name, self.FILENAME)
 
     def generate(self):
-        with open(self.dest(), "w") as f:
+        with open(self.dest, "w") as f:
             f.writelines(self.content())

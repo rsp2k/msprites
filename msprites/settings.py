@@ -6,6 +6,7 @@ class Settings:
     ROWS = 30
     COLS = 30
     FILENAME_FORMAT = "%04d{ext}"
+    SPRITE_FILENAME = "sprite"
 
     @classmethod
     def load(cls, width=None, height=None, ips=None, ext=None, rows=None, cols=None):

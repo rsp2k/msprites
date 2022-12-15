@@ -6,7 +6,6 @@ from msprites import FFmpegThumbnails
 from msprites.settings import Settings
 from msprites.constants import THUMBNAIL_SPRITESHEET
 from msprites.webvtt import WebVTT
-from msprites.temp_file import TempFile
 
 
 class MontageSprites(Settings):
@@ -15,17 +14,18 @@ class MontageSprites(Settings):
         self.thumbs: FFmpegThumbnails = thumbs
         self.dir = tempfile.TemporaryDirectory()
 
+    @property
     def dest(self):
-        return os.path.join(self.dir.name, self.FILENAME_FORMAT.format(ext=self.EXT))
+        return os.path.join(self.dir.name, f"sprites.{Settings.EXT}")
 
     def generate(self):
-        cmd  = THUMBNAIL_SPRITESHEET.format(
+        cmd = THUMBNAIL_SPRITESHEET.format(
             rows=self.ROWS,
             cols=self.COLS,
             width=self.WIDTH,
             height=self.HEIGHT,
             input=self.thumbs.dir.name,
-            output=self.dest()
+            output=self.dest,
         )
         Command.execute(cmd)
 
@@ -40,22 +40,23 @@ class MontageSprites(Settings):
         splist = os.listdir(self.dir.name)
         return len(splist)
 
-    def to_webvtt(self, create_webvtt):
-        if not create_webvtt:
+    def to_webvtt(self, webvtt_filename):
+        if not webvtt_filename:
             return
-        webvtt = WebVTT(self)
+        webvtt = WebVTT(self, filename=webvtt_filename)
         webvtt.generate()
 
     def copy_to(self, copy_dest):
         os.makedirs(copy_dest, exist_ok=True)
         shutil.copytree(self.dir.name, copy_dest)
 
-
     @classmethod
-    def from_media(cls, path, create_webvtt=True, copy_dest=None):
-        sprites = MontageSprites(FFmpegThumbnails.from_media(path))
+    def from_media(cls, path, webvtt_filename=None, copy_dest=None):
+        sprites = MontageSprites(
+            FFmpegThumbnails.from_media(path),
+        )
         sprites.generate()
-        sprites.to_webvtt(create_webvtt)
+        sprites.to_webvtt(webvtt_filename)
         if copy_dest:
             sprites.copy_to(copy_dest)
             sprites.cleanup()

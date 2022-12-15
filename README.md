@@ -18,14 +18,16 @@ Installation
 # How to use:
 ```
 import os
-from msprites import Settings as SpriteSetting
 from msprites import MontageSprites
 
 SpriteSetting.load(ips=0.50)
 sprite = MontageSprites.from_media(
-    path="..SampleVideo_360x240_20mb.mp4",create_webvtt=True
+    video_path="SampleVideo_360x240_20mb.mp4",
+    webvtt_path="sprite.webvtt",
+    copy_dest="",
 )
 
+print(sprite.dir.name)
 print(sprite.dir.name)
 for filename in os.listdir(sprite.dir.name):
     print(filename)
