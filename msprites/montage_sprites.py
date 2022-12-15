@@ -1,6 +1,5 @@
 import os
 import shutil
-import tempfile
 from msprites.command import Command
 from msprites import FFmpegThumbnails
 from msprites.settings import Settings
@@ -10,13 +9,9 @@ from msprites.webvtt import WebVTT
 
 class MontageSprites(Settings):
 
-    def __init__(self, thumbs):
+    def __init__(self, thumbs, sprite_filename):
         self.thumbs: FFmpegThumbnails = thumbs
-        self.dir = tempfile.TemporaryDirectory()
-
-    @property
-    def dest(self):
-        return os.path.join(self.dir.name, f"sprites.{Settings.EXT}")
+        self.sprite_filename = sprite_filename
 
     def generate(self):
         cmd = THUMBNAIL_SPRITESHEET.format(
@@ -24,21 +19,10 @@ class MontageSprites(Settings):
             cols=self.COLS,
             width=self.WIDTH,
             height=self.HEIGHT,
-            input=self.thumbs.dir.name,
-            output=self.dest,
+            input=self.thumbs.dir,
+            output=self.sprite_filename,
         )
         Command.execute(cmd)
-
-    def cleanup(self):
-        try:
-            self.dir.cleanup()
-            self.thumbs.cleanup()
-        except Exception:
-            pass
-
-    def count(self):
-        splist = os.listdir(self.dir.name)
-        return len(splist)
 
     def to_webvtt(self, webvtt_filename):
         if not webvtt_filename:
@@ -46,18 +30,13 @@ class MontageSprites(Settings):
         webvtt = WebVTT(self, filename=webvtt_filename)
         webvtt.generate()
 
-    def copy_to(self, copy_dest):
-        os.makedirs(copy_dest, exist_ok=True)
-        shutil.copytree(self.dir.name, copy_dest)
-
     @classmethod
-    def from_media(cls, path, webvtt_filename=None, copy_dest=None):
+    def from_media(cls, path, sprite_filename, webvtt_filename=None):
         sprites = MontageSprites(
-            FFmpegThumbnails.from_media(path),
+            FFmpegThumbnails.from_media(path, ),
+            sprite_filename=sprite_filename,
         )
         sprites.generate()
         sprites.to_webvtt(webvtt_filename)
-        if copy_dest:
-            sprites.copy_to(copy_dest)
-            sprites.cleanup()
+
         return sprites

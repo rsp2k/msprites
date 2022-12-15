@@ -7,26 +7,20 @@ from msprites.constants import FFMPEG_THUMBNAIL_IMAGES
 
 class FFmpegThumbnails(Settings):
 
-    def __init__(self, filename):
+    def __init__(self, filename, output_directory):
         self.filename = filename
-        self.dir = tempfile.TemporaryDirectory()
+        self.dir = output_directory
 
+    @property
     def dest(self):
         return os.path.join(self.dir.name, self.FILENAME_FORMAT.format(ext=self.EXT))
 
     def generate(self):
         cmd = FFMPEG_THUMBNAIL_IMAGES.format(
             input=self.filename, ips=self.IPS, width=self.WIDTH,
-            height=self.HEIGHT, output=self.dest()
+            height=self.HEIGHT, output=self.dest,
         )
         result = Command.execute(cmd=cmd)
-
-    def cleanup(self):
-        self.dir.cleanup()
-
-    def count(self):
-        imlist = os.listdir(self.dir.name)
-        return len(imlist)
 
     @classmethod
     def from_media(cls, path):

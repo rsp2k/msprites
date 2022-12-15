@@ -1,8 +1,8 @@
 class Settings:
     IPS = 5 #  will be used as 1/5 one in every 5 sec
-    WIDTH = 128
-    HEIGHT = 72
-    EXT = ".jpeg"
+    WIDTH = 512
+    HEIGHT = 288
+    EXT = ".jpg"
     ROWS = 30
     COLS = 30
     FILENAME_FORMAT = "%04d{ext}"
