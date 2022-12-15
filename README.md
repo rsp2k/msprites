@@ -22,13 +22,11 @@ from msprites import MontageSprites
 
 SpriteSetting.load(ips=0.50)
 sprite = MontageSprites.from_media(
-    video_path="SampleVideo_360x240_20mb.mp4",
-    
-    webvtt_filename="sprite.webvtt",
-    copy_frames="",
+    video_path="/tmp/SampleVideo_360x240_20mb.mp4",
+    sprite_filename='/tmp/sprite.jpg',
+    webvtt_filename='/tmp/sprite.webvtt',
 )
 
-print(sprite.dir.name)
 print(sprite.dir.name)
 for filename in os.listdir(sprite.dir.name):
     print(filename)
