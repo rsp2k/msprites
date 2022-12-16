@@ -7,9 +7,9 @@ from msprites.constants import FFMPEG_THUMBNAIL_IMAGES
 
 class FFmpegThumbnails(Settings):
 
-    def __init__(self, filename, output_directory):
+    def __init__(self, filename, output_dir):
         self.filename = filename
-        self.dir = output_directory
+        self.dir = output_dir
 
     @property
     def dest(self):
