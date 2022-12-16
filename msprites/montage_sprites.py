@@ -13,7 +13,7 @@ class MontageSprites(Settings):
         self.thumbs: FFmpegThumbnails = thumbs
         self.sprite_filename = sprite_filename
 
-    def generate(self):
+    def generate(self, sprite_file_name):
         cmd = THUMBNAIL_SPRITESHEET.format(
             rows=self.ROWS,
             cols=self.COLS,
@@ -24,20 +24,29 @@ class MontageSprites(Settings):
         )
         Command.execute(cmd)
 
-    def to_webvtt(self, webvtt_filename):
-        if not webvtt_filename:
+        return self
+
+    def to_webvtt(self, output_dir):
+        if not output_dir:
             return
-        webvtt = WebVTT(self, filename=webvtt_filename)
+        webvtt = WebVTT(self, output_dir=output_dir)
         webvtt.generate()
 
-    @classmethod
-    def from_media(cls, video_path, thumbs_dir, sprite_filename, webvtt_filename=None):
-        thumbs = FFmpegThumbnails.from_media(video_path, output_dir=thumbs_dir)
-        sprites = MontageSprites(
-            thumbs,
-            sprite_filename=sprite_filename,
-        )
-        sprites.generate()
-        sprites.to_webvtt(webvtt_filename)
+        return self
 
-        return sprites
+    @classmethod
+    def from_media(cls, video_path, thumbs_dir, sprite_filename):
+        thumbs = FFmpegThumbnails.from_media(
+            video_path,
+            output_dir=thumbs_dir,
+        )
+
+        MontageSprites(
+            thumbs,
+        ).generate(
+            sprite_filename,
+        ).to_webvtt(
+            thumbs_dir
+        )
+
+        return
