@@ -13,7 +13,7 @@ class FFmpegThumbnails(Settings):
 
     @property
     def dest(self):
-        return os.path.join(self.dir.name, self.FILENAME_FORMAT.format(ext=self.EXT))
+        return os.path.join(self.dir, self.FILENAME_FORMAT.format(ext=self.EXT))
 
     def generate(self):
         cmd = FFMPEG_THUMBNAIL_IMAGES.format(
@@ -24,6 +24,6 @@ class FFmpegThumbnails(Settings):
 
     @classmethod
     def from_media(cls, path, output_dir):
-        thumbs = FFmpegThumbnails(filename=path, output_dir=output_dir)
+        thumbs = FFmpegThumbnails(path, output_dir)
         thumbs.generate()
         return thumbs
