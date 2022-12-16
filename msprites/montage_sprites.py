@@ -31,9 +31,10 @@ class MontageSprites(Settings):
         webvtt.generate()
 
     @classmethod
-    def from_media(cls, video_path, sprite_filename, webvtt_filename=None):
+    def from_media(cls, video_path, thumbs_dir, sprite_filename, webvtt_filename=None):
+        thumbs = FFmpegThumbnails.from_media(video_path, output_dir=thumbs_dir)
         sprites = MontageSprites(
-            FFmpegThumbnails.from_media(video_path),
+            thumbs,
             sprite_filename=sprite_filename,
         )
         sprites.generate()

@@ -23,7 +23,7 @@ class FFmpegThumbnails(Settings):
         result = Command.execute(cmd=cmd)
 
     @classmethod
-    def from_media(cls, path):
-        thumbs = FFmpegThumbnails(filename=path)
+    def from_media(cls, path, output_dir):
+        thumbs = FFmpegThumbnails(filename=path, output_dir=output_dir)
         thumbs.generate()
         return thumbs
