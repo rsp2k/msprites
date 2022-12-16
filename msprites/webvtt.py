@@ -9,11 +9,9 @@ class WebVTT:
     IMAGE_TITLE_FORMAT = "{filename}#xywh={x},{y},{w},{h}\n\n"
     FILENAME = "sprite.webvtt"
 
-    def __init__(self, sprites, filename=None):
+    def __init__(self, sprites, output_dir):
         self.sprites = sprites
-        self.dir = sprites.dir
-        if filename:
-            self.FILENAME = filename
+        self.output_dir = output_dir
 
     def ips_seconds_to_timestamp(self, ips):
         return time.strftime(WebVTT.TIME_FORMAT, time.gmtime(ips))
@@ -41,7 +39,7 @@ class WebVTT:
         for i in range(0, self.sprites.thumbs.count()):
 
             filename = Settings.spritefilename((i+1)//gridsize)
-            contents+=[
+            contents += [
                 WebVTT.TIMELINE_FORMAT.format(
                     start=self.ips_seconds_to_timestamp(start),
                     end=self.ips_seconds_to_timestamp(end),
@@ -57,7 +55,7 @@ class WebVTT:
 
     @property
     def dest(self):
-        return os.path.join(self.dir.name, self.FILENAME)
+        return os.path.join(self.output_dir, self.FILENAME)
 
     def generate(self):
         with open(self.dest, "w") as f:
